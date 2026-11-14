@@ -18,7 +18,15 @@
     <section>
       <h3>WaitWise</h3>
       <p>Can spoken self-corrections prevent premature AI agent actions?</p>
-      <p>Experiment coming soon.</p>
+      <form method="post">
+      {% csrf_token %}
+      <label for="waitwise-text">Spoken instruction transcript</label>
+      <textarea id="waitwise-text" name="instruction" rows="4" placeholder="Send the report now... actually, wait. Do not send it yet."></textarea>
+      <button type="submit" id="waitwise-run">Run WaitWise Experiment</button>
+      {% if result %}
+      <p id="waitwise-result">{{ result }}</p>
+      {% endif %}
+      </form>
     </section>
     <section>
       <h3>VoiceRank</h3>

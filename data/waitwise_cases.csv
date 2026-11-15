@@ -1,0 +1,9 @@
+transcript,revises_prior_instruction,discourse_function
+"Send the report now... actually, wait. Do not send it yet.",1,instruction_cancellation
+"Book the flight for Monday. Sorry, make that Tuesday.",1,date_revision
+"Email Alice; instead, email Bob.",1,recipient_revision
+"Move the file to folder A—no, folder B.",1,destination_revision
+The report actually arrived yesterday.,0,assertive_emphasis
+Please wait until tomorrow to send the report.,0,waiting_instruction
+"The report arrived yesterday. Wait, what day is today?",0,question_preface
+"The presenter paused; instead, the audience applauded.",0,event_contrast

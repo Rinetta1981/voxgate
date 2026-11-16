@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+  <meta name="theme-color" content="#101625">
+  <meta name="description" content="Explore VOXGATE, a free browser-only research demonstration of WaitWise instruction-revision detection. No accounts, paid APIs or real-world actions.">
+  <meta property="og:title" content="VOXGATE · AI, Wait! I Didn't Mean That!">
+  <meta property="og:description" content="When people revise a spoken instruction, can AI recognize the correction? Try a safe, research-grade text detector in your browser.">
+  <meta property="og:type" content="website">
+  <title>VOXGATE — When Voices Cross AI Safety Boundaries</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <div class="grid-wash" aria-hidden="true"></div>
+  <header class="site-header wrapper">
+    <a href="#top" class="brand" aria-label="VOXGATE — top of page">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>
+      <span>VOX<span class="brand-light">GATE</span></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#lab">Try WaitWise</a>
+      <a href="#findings">The evidence</a>
+      <a href="#project">About the project</a>
+      <a href="https://github.com/Rinetta1981/voxgate" target="_blank" rel="noopener noreferrer" class="nav-cta">Source code <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero wrapper" id="top" aria-labelledby="headline">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> AN INTERACTIVE AI SAFETY RESEARCH DEMO</p>
+        <h1 id="headline">AI, <em>wait.</em><br>I didn’t mean <span class="scribble">that!</span></h1>
+        <p class="hero-lede">People change their minds mid-sentence. AI systems should notice before proposing the wrong action.</p>
+        <p class="hero-meta">Explore how <strong>WaitWise</strong>, part of the VOXGATE project, identifies possible instruction corrections in everyday language.</p>
+        <div class="hero-actions">
+          <a href="#lab" class="button button-primary">Try the live text demo <span aria-hidden="true">↗</span></a>
+          <a href="#findings" class="text-link">See the research <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      <div class="illustration" aria-label="Diagram: a command to send a report to Alice is corrected to Bob. WaitWise recognizes a possible revision and requests review.">
+        <div class="chat-card card-original">
+          <span class="chat-label"><span class="chat-dot"></span> SPEAKER · FIRST INSTRUCTION</span>
+          <p>“Send the report to <strong>Alice.</strong>”</p>
+        </div>
+        <div class="edit-marker"><span aria-hidden="true">↳</span> self-correction</div>
+        <div class="chat-card card-correction">
+          <span class="chat-label"><span class="chat-dot"></span> SPEAKER · REVISION</span>
+          <p>“Actually, wait. Send it to <strong>Bob</strong> instead.”</p>
+        </div>
+        <div class="connection" aria-hidden="true"><div></div></div>
+        <div class="gate-illustration">
+          <span class="gate-icon" aria-hidden="true">⌁</span>
+          <div><small>WAITWISE V4</small><strong>Possible revision detected</strong><span>Request review, don't assume</span></div>
+          <span class="gate-check" aria-hidden="true">✓</span>
+        </div>
+        <span class="hero-decoration hero-deco-one" aria-hidden="true">✳</span>
+        <span class="hero-decoration hero-deco-two" aria-hidden="true">✦</span>
+      </div>
+    </section>
+
+    <section id="lab" class="lab-section wrapper" aria-labelledby="lab-heading">
+      <div class="section-intro">
+        <div><p class="eyebrow">01 / THE EXPERIMENT</p><h2 id="lab-heading">Try changing your mind.</h2></div>
+        <p>Enter a <strong>fictional instruction</strong>. The detector will look for an initial command followed by an explicit replacement—not simply a word like “actually.”</p>
+      </div>
+      <div class="lab-shell">
+        <div class="lab-main">
+          <div class="lab-bar"><span class="lab-status-dot" aria-hidden="true"></span> WAITWISE · V4 TEXT DETECTOR <span class="lab-version">RESEARCH PREVIEW</span></div>
+          <form id="revision-form" novalidate>
+            <label for="instruction">YOUR INSTRUCTION</label>
+            <textarea id="instruction" rows="5" maxlength="2000" spellcheck="true" placeholder="Send the report to Alice. Actually, send it to Bob instead.">Send the report to Alice. Actually, send it to Bob instead.</textarea>
+            <div class="input-footer"><span id="char-count">0 / 2000 characters</span><span>English · fictional scenarios only</span></div>
+            <button type="submit" class="button button-primary run-button">Analyze the instruction <span aria-hidden="true">→</span></button>
+          </form>
+          <div class="quick-examples">
+            <span>OR TRY AN EXAMPLE</span>
+            <div class="example-row">
+              <button type="button" class="example-btn" data-example="correction">A real correction</button>
+              <button type="button" class="example-btn" data-example="comment">An unrelated comment</button>
+              <button type="button" class="example-btn" data-example="asr">A transcription error</button>
+            </div>
+          </div>
+        </div>
+        <aside class="lab-result" aria-live="polite" aria-atomic="true" id="result-panel">
+          <p class="result-kicker">ANALYSIS RESULT</p>
+          <div id="result-icon" class="result-icon result-neutral" aria-hidden="true">↗</div>
+          <h3 id="result-title">Ready to inspect</h3>
+          <p id="result-description">Run the detector to see whether it recognizes a possible replacement instruction.</p>
+          <div id="result-details" class="result-details" hidden>
+            <div><span>Recognized initial command</span><strong id="result-opening">—</strong></div>
+            <div><span>Revision pattern</span><strong id="result-revision">—</strong></div>
+            <div><span>Review recommendation</span><strong id="result-review">—</strong></div>
+          </div>
+          <div class="privacy-note"><span aria-hidden="true">◈</span><span>All analysis happens in your browser. Your typed text is never sent to a server or saved by this demo.</span></div>
+        </aside>
+      </div>
+      <p class="lab-disclaimer"><strong>Important:</strong> A detected revision is only a <em>review flag</em>, not an action decision. A non-detection does not establish correctness, permission, consent, or safety. No AI models, external services, or real actions are used here.</p>
+    </section>
+
+    <section class="what-section wrapper" id="project" aria-labelledby="project-title">
+      <p class="eyebrow">02 / WHY IT MATTERS</p>
+      <h2 id="project-title">A tiny linguistic detail.<br><span>A potentially big difference.</span></h2>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">“ ”</div>
+          <h3>Language unfolds</h3>
+          <p>Human instructions are not always finished on the first try. Corrections, cancellations and changes of mind are normal conversational practices.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">⌁</div>
+          <h3>Transcripts can mislead</h3>
+          <p>A missing sentence boundary or a mistaken verb can disrupt how a downstream system interprets a revised instruction, even when many words are recognized correctly.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">◇</div>
+          <h3>Review is not authorization</h3>
+          <p>A linguistic signal can justify pausing for review. It cannot prove that a speaker is authorized to send, delete or change anything.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="findings" class="findings-section" aria-labelledby="findings-heading">
+      <div class="wrapper">
+        <div class="section-intro light-intro">
+          <div><p class="eyebrow">03 / INITIAL FINDINGS</p><h2 id="findings-heading">What did we observe?</h2></div>
+          <p>In one constructed pilot, 24 scenarios were spoken at two rates, producing 48 recordings. Twelve scenarios contained revisions, giving 24 revision recordings.</p>
+        </div>
+        <div class="metrics-layout">
+          <div class="metrics-highlight">
+            <div class="metrics-topline"><span>REVISIONS DETECTED</span><span>24 REVISION RECORDINGS</span></div>
+            <div class="meter-group"><div class="meter-label"><span>Older detector · V3</span><strong>5 / 24</strong></div><div class="meter-track"><div class="meter-fill older"></div></div></div>
+            <div class="meter-group"><div class="meter-label"><span>Updated detector · V4</span><strong>23 / 24</strong></div><div class="meter-track"><div class="meter-fill newer"></div></div></div>
+            <p>The V4 detector performed better on these constructed examples. These are repeated versions of 24 scenarios—not 48 independent linguistic cases.</p>
+          </div>
+          <div class="metrics-aside">
+            <span class="metric-number">3<span>/48</span></span>
+            <h3>Model action choices changed</h3>
+            <p>Whisper transcript differences changed a local text-only Qwen model's symbolic proposal in three paired comparisons—two improvements and one regression.</p>
+            <div class="pill-note">Text-only model · no direct vocal-authority inference</div>
+          </div>
+        </div>
+        <div class="limits"><strong>Research boundary.</strong> The findings use researcher-constructed, provisionally labeled English scenarios, synthetic speech and a small local model. No real actions were executed. They do not demonstrate general real-world safety or effects of vocal authority on audio-native AI models.</div>
+      </div>
+    </section>
+
+    <section class="more-section wrapper" aria-labelledby="about-heading">
+      <div><p class="eyebrow">04 / THE PROJECT</p><h2 id="about-heading">VOXGATE brings<br>language into AI safety.</h2></div>
+      <div class="more-copy">
+        <p><strong>WaitWise</strong> studies instruction repairs and review flags. <strong>VoiceRank</strong> studies how speaking rate affects human perceptions of authority, clarity and urgency. Direct audio-model tests are future research.</p>
+        <p>The full Python/Django research application, speech-recognition pipelines and local Qwen experiments remain on the researcher's computer. This public site offers an intentionally restricted, browser-only port of the text detector.</p>
+        <a class="button button-outline" href="https://github.com/Rinetta1981/voxgate" target="_blank" rel="noopener noreferrer">Explore the research repository <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrapper footer-inner"><div class="footer-logo">VOX<span>GATE</span><small>When Voices Cross AI Safety Boundaries</small></div><div><p>Research prototype · No real-world actions · Free and open source</p><a href="https://github.com/Rinetta1981/voxgate" target="_blank" rel="noopener noreferrer">View code and documentation ↗</a></div></div>
+  </footer>
+  <script src="detector.js" defer></script>
+  <script src="site.js" defer></script>
+</body>
+</html>

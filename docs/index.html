@@ -75,7 +75,8 @@
             <label for="instruction">YOUR INSTRUCTION</label>
             <textarea id="instruction" rows="5" maxlength="2000" spellcheck="true" placeholder="Send the report to Alice. Actually, send it to Bob instead.">Send the report to Alice. Actually, send it to Bob instead.</textarea>
             <div class="input-footer"><span id="char-count">0 / 2000 characters</span><span>English · fictional scenarios only</span></div>
-            <button type="submit" class="button button-primary run-button">Explain the instruction <span aria-hidden="true">→</span></button>
+            <button type="button" id="analyze-button" class="button button-primary run-button">Explain the instruction <span aria-hidden="true">→</span></button>
+            <p id="analysis-feedback" role="status" aria-live="polite" style="font-size:13px;color:#d0dcf5;margin:12px 0 0">Analyzer loading… If this message remains, JavaScript has not loaded.</p>
           </form>
           <div class="quick-examples">
             <span>OR TRY AN EXAMPLE</span>
@@ -161,8 +162,6 @@
   <footer class="site-footer">
     <div class="wrapper footer-inner"><div class="footer-logo">VOX<span>GATE</span><small>When Voices Cross AI Safety Boundaries</small></div><div><p>Research prototype · No real-world actions · Free and open source</p><a href="https://github.com/Rinetta1981/voxgate" target="_blank" rel="noopener noreferrer">View code and documentation ↗</a></div></div>
   </footer>
-  <script src="detector.js" defer></script>
-  <script src="interpret.js" defer></script>
-  <script src="site.js" defer></script>
+  <script src="app-v2.js?v=20261116d" defer></script>
 </body>
 </html>

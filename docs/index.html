@@ -66,16 +66,16 @@
     <section id="lab" class="lab-section wrapper" aria-labelledby="lab-heading">
       <div class="section-intro">
         <div><p class="eyebrow">01 / THE EXPERIMENT</p><h2 id="lab-heading">Try changing your mind.</h2></div>
-        <p>Enter a <strong>fictional instruction</strong>. The detector will look for an initial command followed by an explicit replacement—not simply a word like “actually.”</p>
+        <p>Enter a <strong>fictional instruction</strong>. See what the detector actually noticed: the original instruction, a possible correction cue, and the following words. Unclear cases are marked uncertain.</p>
       </div>
       <div class="lab-shell">
         <div class="lab-main">
-          <div class="lab-bar"><span class="lab-status-dot" aria-hidden="true"></span> WAITWISE · V4 TEXT DETECTOR <span class="lab-version">RESEARCH PREVIEW</span></div>
+          <div class="lab-bar"><span class="lab-status-dot" aria-hidden="true"></span> WAITWISE V4 + EXPLAINABLE REPAIR EXPLORER <span class="lab-version">RESEARCH PREVIEW</span></div>
           <form id="revision-form" novalidate>
             <label for="instruction">YOUR INSTRUCTION</label>
             <textarea id="instruction" rows="5" maxlength="2000" spellcheck="true" placeholder="Send the report to Alice. Actually, send it to Bob instead.">Send the report to Alice. Actually, send it to Bob instead.</textarea>
             <div class="input-footer"><span id="char-count">0 / 2000 characters</span><span>English · fictional scenarios only</span></div>
-            <button type="submit" class="button button-primary run-button">Analyze the instruction <span aria-hidden="true">→</span></button>
+            <button type="submit" class="button button-primary run-button">Explain the instruction <span aria-hidden="true">→</span></button>
           </form>
           <div class="quick-examples">
             <span>OR TRY AN EXAMPLE</span>
@@ -162,6 +162,7 @@
     <div class="wrapper footer-inner"><div class="footer-logo">VOX<span>GATE</span><small>When Voices Cross AI Safety Boundaries</small></div><div><p>Research prototype · No real-world actions · Free and open source</p><a href="https://github.com/Rinetta1981/voxgate" target="_blank" rel="noopener noreferrer">View code and documentation ↗</a></div></div>
   </footer>
   <script src="detector.js" defer></script>
+  <script src="interpret.js" defer></script>
   <script src="site.js" defer></script>
 </body>
 </html>

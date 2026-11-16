@@ -13,3 +13,9 @@ On GitHub, open **Settings > Pages**, choose **Deploy from a branch**, select `m
 - Results are flags for possible human review **not** proof of speaker permission, correctness, or safety.
 - It intentionally does not expose the Django research server, Ollama, local reports, participant CSVs or audio recordings.
 - If the exact V4 Python detector changes later, update the JS port and re-run the paired tests; do not describe V4 as a validated safety gate.
+
+## Experimental explanation layer
+
+The public page also includes `interpret.js`, an exploratory, transparent text-span explanation layer. It identifies possible opening instructions, cue words, and subsequent command-like text using additional heuristics. This is **not WaitWise V4**, is not a language model, and has not been validated as a safety or semantic understanding mechanism. The frozen V4 baseline and published V3/V4 numbers are unaffected.
+
+The public analysis can flag likely revisions or state that a sentence is outside its supported patterns. It cannot reliably derive final intent, authorize actions, or handle arbitrary natural language.

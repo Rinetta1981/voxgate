@@ -12,6 +12,8 @@
     <h1>VOXGATE</h1>
     <h2>When Voices Cross AI Safety Boundaries</h2>
     <p>Investigating how spoken social cues affect AI agent safety.</p>
+    <p><a href="{% url 'gate_lab' %}" style="color:#67e8f9;font-weight:bold">Explore the Authorization Gate Lab →</a></p>
+    <p><a href="{% url 'voicerank_lab' %}" style="color:#67e8f9;font-weight:bold">Open the VoiceRank Speech Perception Lab →</a></p>
   </header>
   <main>
     <h2>Research Laboratory</h2>
@@ -19,19 +21,18 @@
       <h3>WaitWise</h3>
       <p>Can spoken self-corrections prevent premature AI agent actions?</p>
       <form method="post">
-      {% csrf_token %}
-      <label for="waitwise-text">Spoken instruction transcript</label>
-      <textarea id="waitwise-text" name="instruction" rows="4" placeholder="Send the report now... actually, wait. Do not send it yet."></textarea>
-      <button type="submit" id="waitwise-run">Run WaitWise Experiment</button>
-      {% if result %}
-      <p id="waitwise-result">{{ result }}</p>
-      {% endif %}
+        {% csrf_token %}
+        <label for="waitwise-text">Spoken instruction transcript</label>
+        <textarea id="waitwise-text" name="instruction" rows="4" placeholder="Send the report now... actually, wait. Do not send it yet."></textarea>
+        <button type="submit" id="waitwise-run">Run WaitWise Experiment</button>
+        {% if result %}<p id="waitwise-result">{{ result }}</p>{% endif %}
       </form>
     </section>
     <section>
       <h3>VoiceRank</h3>
-      <p>Can vocal authority influence unauthorized AI agent actions?</p>
-      <p>Experiment coming soon.</p>
+      <p>Do voice characteristics influence listeners' perceptions of authority, and eventually AI-agent permission decisions?</p>
+      <p>Our first experiment uses locally generated speech with constant text and synthetic voice, varying speaking rate.</p>
+      <p><a href="{% url 'voicerank_lab' %}" style="color:#67e8f9">Launch VoiceRank pilot →</a></p>
     </section>
   </main>
 </body>

@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VOXGATE | Research Results</title>
+  <link rel="stylesheet" href="{% static 'core/style.css' %}">
+  <link rel="stylesheet" href="{% static 'core/results_dashboard.css' %}">
+</head>
+<body>
+<header class="results-head">
+  <p class="nav"><a href="/">VOXGATE</a> · <a href="/lab/">WaitWise Lab</a> · <a href="/voice/study/">VoiceRank Study</a></p>
+  <h1>Research Results</h1>
+  <p>WaitWise spoken-action evaluation · read-only local dashboard</p>
+  <p class="caution">Researcher-constructed symbolic scenarios; not a real-world AI safety or audio-authority evaluation. No real tools or actions are connected.</p>
+</header>
+<div class="results-main">
+{% if not ready %}
+  <section class="results-panel">
+    <h2>Audit report unavailable</h2>
+    <p>{{ message }}</p>
+    <p>From Terminal 2, run <code>python audit_spoken_action_results.py</code>, then refresh.</p>
+  </section>
+{% else %}
+  <section class="results-figures" aria-label="Study summary">
+    <div><small>Constructed scenarios</small><strong>{{ summary.cases }}</strong></div>
+    <div><small>Paired ASR comparisons</small><strong>{{ summary.comparisons }}</strong></div>
+    <div><small>Changed model proposals</small><strong>{{ summary.changes }}</strong></div>
+    <div><small>Wrong → correct</small><strong>{{ summary.improvements }}</strong></div>
+    <div><small>Correct → wrong</small><strong>{{ summary.regressions }}</strong></div>
+  </section>
+  <section class="results-panel">
+    <h2>Policy outcomes</h2>
+    <p>“Proposed” means a hypothetical action was returned. “Held” means review was requested. Neither constitutes execution or authorization.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Transcript</th><th>Policy</th><th>Proposed</th><th>Correct</th><th>Wrong</th><th>Held</th><th>Wrong / proposed</th></tr></thead>
+        <tbody>{% for r in overview %}<tr><td>{{ r.source }}</td><td>{{ r.policy }}</td><td>{{ r.proposed }}/{{ r.n }}</td><td>{{ r.correct }}</td><td>{{ r.wrong }}</td><td>{{ r.held }}</td><td>{{ r.wrong_percent }}</td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+  </section>
+  <section class="results-panel">
+    <h2>Paired model-choice changes</h2>
+    <p>Changes are between a reference transcript and Whisper's transcript of that same scenario. Two recordings of a scenario are not independent cases.</p>
+    {% if changes %}<div class="table-wrap"><table><thead><tr><th>Case</th><th>Rate</th><th>Outcome</th></tr></thead><tbody>{% for item in changes %}<tr><td>{{ item.case }}</td><td>{{ item.source }}</td><td>{{ item.transition }}</td></tr>{% endfor %}</tbody></table></div>
+    {% else %}<p>No model-choice differences recorded.</p>{% endif %}
+  </section>
+  <section class="results-panel">
+    <details>
+      <summary>View revised versus unrevised outcomes</summary>
+      <div class="table-wrap"><table><thead><tr><th>Transcript</th><th>Policy</th><th>Subset</th><th>Proposed</th><th>Correct</th><th>Wrong</th><th>Held</th></tr></thead><tbody>{% for r in breakdown %}<tr><td>{{ r.source }}</td><td>{{ r.policy }}</td><td>{{ r.group }}</td><td>{{ r.proposed }}/{{ r.n }}</td><td>{{ r.correct }}</td><td>{{ r.wrong }}</td><td>{{ r.held }}</td></tr>{% endfor %}</tbody></table></div>
+    </details>
+  </section>
+{% endif %}
+<footer><p>This view only reads local saved reports. It never downloads data, runs models, authorizes a proposed action, or contacts a paid API.</p></footer>
+</div>
+</body>
+</html>

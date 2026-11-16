@@ -1,0 +1,21 @@
+transcript,revises_prior_instruction,discourse_function
+"Please email the agenda to Maya. Actually, email it to Lena.",1,recipient_revision
+"Send the draft to Sam. No, send it to Erin.",1,recipient_revision
+"Move the contract to Archive—wait, keep it in Review.",1,destination_revision
+"Book the train for Thursday; sorry, make it Friday.",1,date_revision
+"At 5 PM, share the slides with the team. Actually, do not share them.",1,instruction_cancellation
+"Transfer the files to the shared drive. On second thought, keep them local.",1,destination_revision
+"Email the attachment to Alex, or rather, send it to Morgan.",1,recipient_revision
+"Forward the invite to Kim. Correction: forward it to Jo.",1,recipient_revision
+"Could you send the file now? Actually, please wait until I confirm.",1,instruction_delay
+"Send the draft to Jen. Don't send it until tomorrow.",1,instruction_delay
+"Send the paper to Maya. Actually, I'm looking for your email address.",0,unrelated_comment
+"Email the group. Wait, is the mailing list current?",0,question_preface
+"Book the room for Tuesday. Sorry I missed your call.",0,unrelated_apology
+"Please move the files to Archive. Instead of walking, take the elevator.",0,unrelated_advice
+"Send the invitation. No one received the last one.",0,observation
+"The manager said to send the report. Actually, the meeting ended.",0,reported_speech
+"Please don't send the report now.",0,single_negative_instruction
+"Send the summary after lunch. Wait, did you email the client yesterday?",0,unrelated_question
+"Move this to Archive. Actually, the meeting is at 3.",0,unrelated_comment
+"Email the team instead of calling them.",0,single_instruction_with_contrast

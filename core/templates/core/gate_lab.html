@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VOXGATE | Authorization Gate Lab</title>
+  <link rel="stylesheet" href="{% static 'core/style.css' %}">
+  <link rel="stylesheet" href="{% static 'core/gate_lab.css' %}">
+</head>
+<body>
+  <header class="lab-header">
+    <p class="eyebrow"><a href="/">← Back to VOXGATE</a></p>
+    <h1>Authorization Gate Lab</h1>
+    <p>Explore a saved local-model decision and explicitly approve or reject its <strong>symbolic</strong> action.</p>
+    <p class="warning">RESEARCH DEMO ONLY — No emails, bookings, transfers, deletion or other tools can execute.</p>
+  </header>
+  <main class="lab-grid">
+    {% if messages %}
+      <div class="message-area" role="status" aria-live="polite">
+      {% for message in messages %}<p class="message">{{ message }}</p>{% endfor %}
+      </div>
+    {% endif %}
+    {% if not ready %}
+      <section class="lab-panel">
+        <h2>Saved model results required</h2>
+        <p>The lab needs the existing balanced experiment on this computer.</p>
+        <pre>python balanced_local_waitwise_agent.py --run-local --limit 24</pre>
+        <p class="small">Local report error: {{ error }}</p>
+      </section>
+    {% else %}
+      <section class="lab-panel">
+        <h2>1. Choose a case and gate</h2>
+        <form method="get" action="{% url 'gate_lab' %}">
+          <label for="case">Research scenario</label>
+          <select id="case" name="case">
+            {% for case in cases %}
+              <option value="{{ case.case_id }}" {% if selected_id == case.case_id %}selected{% endif %}>{{ case.case_id }} — {{ case.transcript|truncatechars:65 }}</option>
+            {% endfor %}
+          </select>
+          <label for="policy">Gate policy</label>
+          <select id="policy" name="policy">
+            {% for key, label in policies %}
+              <option value="{{ key }}" {% if selected_policy == key %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Inspect saved decision</button>
+        </form>
+        <h3>{{ selected.case_id }} — Full transcript</h3>
+        <p class="transcript">{{ selected.transcript }}</p>
+        <p class="small">All examples and action IDs are researcher-constructed; no new model inference is performed.</p>
+      </section>
+      <section class="lab-panel">
+        <h2>2. Review the proposed action</h2>
+        <p><strong>Gate decision:</strong>
+        {% if decision.held %}<span class="hold">HOLD</span>{% else %}<span class="proposed">WOULD PROPOSE</span>{% endif %}</p>
+        <p><strong>Reason:</strong> <code>{{ decision.reason }}</code></p>
+        <p><strong>Unverified candidate:</strong> {% if candidate %}<code>{{ candidate }}</code>{% else %}none{% endif %}</p>
+        {% if decision.held %}
+          <p class="warning">This gate withheld the decision. The candidate below, if any, comes from the saved ungated model and may be wrong. It is NOT automatically authorized.</p>
+        {% endif %}
+        {% if candidate %}
+          <form method="post" action="{% url 'gate_lab' %}">
+            {% csrf_token %}
+            <input type="hidden" name="command" value="propose">
+            <input type="hidden" name="case" value="{{ selected_id }}">
+            <input type="hidden" name="policy" value="{{ selected_policy }}">
+            <button type="submit">Create a reviewable symbolic proposal</button>
+          </form>
+        {% else %}
+          <p>No valid model candidate exists; this case remains on HOLD.</p>
+        {% endif %}
+      </section>
+      {% if pending %}
+        <section class="lab-panel pending-panel">
+          <h2>3. Pending confirmation — no action executed</h2>
+          <p><strong>Scenario:</strong> {{ pending.case_id }}</p>
+          <p><strong>Transcript:</strong> {{ pending_transcript }}</p>
+          <p><strong>Exact symbolic action:</strong> <code>{{ pending.action }}</code></p>
+          <p><strong>Policy:</strong> {{ pending.policy }} {% if pending.was_held %}(gate held){% else %}(gate would propose){% endif %}</p>
+          <p class="warning">Do not approve unless this exact action matches the speaker's complete intention. Approval only stores a label in this browser session; it does not execute the action.</p>
+          <div class="lab-actions">
+            <form method="post" action="{% url 'gate_lab' %}">
+              {% csrf_token %}
+              <input type="hidden" name="command" value="confirm">
+              <input type="hidden" name="case" value="{{ pending.case_id }}">
+              <input type="hidden" name="policy" value="{{ pending.policy }}">
+              <input type="hidden" name="token" value="{{ pending.token }}">
+              <input type="hidden" name="action" value="{{ pending.action }}">
+              <button type="submit">Approve symbolic action only</button>
+            </form>
+            <form method="post" action="{% url 'gate_lab' %}">
+              {% csrf_token %}
+              <input type="hidden" name="command" value="reject">
+              <input type="hidden" name="case" value="{{ pending.case_id }}">
+              <input type="hidden" name="policy" value="{{ pending.policy }}">
+              <button type="submit" class="secondary">Reject proposal</button>
+            </form>
+          </div>
+        </section>
+      {% endif %}
+      <section class="lab-panel">
+        <h2>Session-only review history</h2>
+        {% if history %}
+          <ul class="history-list">
+          {% for item in history %}
+            <li><strong>{{ item.case_id }}</strong> — {{ item.outcome }} — <code>{{ item.action }}</code></li>
+          {% endfor %}
+          </ul>
+        {% else %}
+          <p>No symbolic proposals reviewed yet.</p>
+        {% endif %}
+        <p class="small">History is limited to 20 entries in this browser session; it is not a durable research log.</p>
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>

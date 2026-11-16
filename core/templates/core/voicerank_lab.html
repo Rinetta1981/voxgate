@@ -1,0 +1,88 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoiceRank | Blinded Speech Perception Pilot</title>
+  <link rel="stylesheet" href="{% static 'core/style.css' %}">
+  <link rel="stylesheet" href="{% static 'core/voicerank_lab.css' %}">
+</head>
+<body>
+  <header class="voice-header">
+    <p><a href="/">← Back to VOXGATE</a> &nbsp; · &nbsp; <a href="{% url 'gate_lab' %}">WaitWise Gate Lab</a></p>
+    <h1>VoiceRank</h1>
+    <h2>Blinded Speech Perception Pilot</h2>
+    <p>Listen to speech samples and rate your own perceptions. The same voice reads identical text at two speaking rates.</p>
+    <p class="warning">LOCAL RESEARCH PILOT ONLY. Ratings do not measure actual authorization, and no model or external tool is used.</p>
+  </header>
+  <main class="voice-layout">
+    {% if not ready %}
+      <section class="voice-panel">
+        <h2>Audio stimuli not ready</h2>
+        <p>Generate the eight local recordings from Terminal 2:</p>
+        <pre>python generate_voicerank_stimuli.py</pre>
+        <p class="small">{{ error }}</p>
+      </section>
+    {% else %}
+      <section class="voice-panel">
+        <h2>Your listening session</h2>
+        <p><strong>{{ progress }} of {{ total }} clips rated</strong></p>
+        <div class="progress" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="{{ total }}">
+          <div style="width: {% widthratio progress total 100 %}%"></div>
+        </div>
+        {% if error %}<p class="warning" role="alert">{{ error }}</p>{% endif %}
+        {% if complete %}
+          <h3>All eight clips rated</h3>
+          <p>Download your local CSV to inspect scores and compare the two speaking-rate conditions. The condition labels were hidden during listening.</p>
+          <p><a class="voice-action" href="{% url 'voicerank_lab' %}?export=csv">Export anonymized pilot CSV</a></p>
+        {% else %}
+          <h3>Listen to the next clip</h3>
+          <p class="small">Listen once or more, then answer all three questions. The transcript and experimental condition are intentionally hidden.</p>
+          <audio controls preload="none" src="{% url 'voicerank_audio' current %}">
+            Your browser does not support HTML audio. Use Safari or another browser with WAV support.
+          </audio>
+          <form method="post" action="{% url 'voicerank_lab' %}">
+            {% csrf_token %}
+            <input type="hidden" name="command" value="rate">
+            <input type="hidden" name="clip_id" value="{{ current }}">
+            <fieldset>
+              <legend>1. How authoritative does this voice sound?</legend>
+              {% for score in '12345' %}
+                <label class="radio"><input type="radio" name="authority" value="{{ score }}" required> {{ score }}</label>
+              {% endfor %}
+              <p class="small">1 = not at all authoritative; 5 = very authoritative</p>
+            </fieldset>
+            <fieldset>
+              <legend>2. How clear is the speech?</legend>
+              {% for score in '12345' %}
+                <label class="radio"><input type="radio" name="clarity" value="{{ score }}" required> {{ score }}</label>
+              {% endfor %}
+              <p class="small">1 = difficult to understand; 5 = very clear</p>
+            </fieldset>
+            <fieldset>
+              <legend>3. How urgent does the voice sound?</legend>
+              {% for score in '12345' %}
+                <label class="radio"><input type="radio" name="urgency" value="{{ score }}" required> {{ score }}</label>
+              {% endfor %}
+              <p class="small">1 = not urgent; 5 = very urgent</p>
+            </fieldset>
+            <button type="submit">Record rating and continue</button>
+          </form>
+        {% endif %}
+      </section>
+      <section class="voice-panel">
+        <h2>About the experiment</h2>
+        <p>We manipulate <strong>speaking rate</strong> while holding the synthetic voice and utterance text constant within each pair.</p>
+        <p>Authority is a <strong>listener judgment</strong>, not an intrinsic property of slower or faster speech. Clarity and urgency are measured separately.</p>
+        <p>Ratings are held temporarily in a local Django session, identified by your browser session cookie. Use Export to save them. Reset erases the current session's ratings.</p>
+        <form method="post" action="{% url 'voicerank_lab' %}">
+          {% csrf_token %}
+          <input type="hidden" name="command" value="reset">
+          <button class="secondary" type="submit">Start a fresh listening session</button>
+        </form>
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>

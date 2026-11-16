@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoiceRank | Expanded Listening Study</title>
+  <link rel="stylesheet" href="{% static 'core/style.css' %}">
+  <link rel="stylesheet" href="{% static 'core/voicerank_lab.css' %}">
+</head>
+<body>
+  <header class="voice-header">
+    <p><a href="/">← VOXGATE</a> · <a href="{% url 'voicerank_lab' %}">Original VoiceRank pilot</a> · <a href="{% url 'gate_lab' %}">WaitWise Lab</a></p>
+    <h1>VoiceRank</h1>
+    <h2>Expanded Listening Study</h2>
+    <p>Eight clips, four utterances, one synthetic voice, and two speaking rates. Please rate your impression, not whether you agree with the words.</p>
+    <p class="warning">Local research prototype. Speaking rate is manipulated; authority is a listener rating. This page does not study or execute AI-agent permissions.</p>
+  </header>
+  <main class="voice-layout">
+  {% if not ready %}
+    <section class="voice-panel">
+      <h2>Audio files unavailable</h2>
+      <p>Use the original WAV recordings. In Terminal 2, run <code>python generate_voicerank_stimuli.py --check</code>.</p>
+      <p class="small">{{ error }}</p>
+    </section>
+  {% elif not started %}
+    <section class="voice-panel">
+      <h2>Before you begin</h2>
+      <p>This listening activity takes approximately 3–5 minutes. You will hear eight synthesized clips and rate authority, clarity and urgency from 1 (low) to 5 (high).</p>
+      <p>Participation is voluntary. You may stop at any time or reset this browser session. Responses and a randomly generated participant code remain in your local Django session until you export the CSV. No name, email address or account is requested; the CSV has no name or IP address. The local development server may still record ordinary request logs.</p>
+      <p>No data is automatically submitted to a researcher, cloud service, or language model. Exporting a CSV places a copy on your computer; resetting cannot delete copies you already exported.</p>
+      <p class="warning">Before recruiting participants for research, obtain appropriate ethics review and an approved information/consent procedure.</p>
+      {% if error %}<p class="warning" role="alert">{{ error }}</p>{% endif %}
+      <form method="post" action="{% url 'voicerank_study' %}">
+        {% csrf_token %}
+        <input type="hidden" name="command" value="start">
+        <label><input type="checkbox" name="consent" value="yes" required> I have read the information above and voluntarily choose to take part.</label>
+        <button type="submit">Start listening</button>
+      </form>
+    </section>
+  {% else %}
+    <section class="voice-panel">
+      <h2>Listening session</h2>
+      <p><strong>{{ progress }} of {{ total }} clips rated</strong></p>
+      <div class="progress" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="{{ total }}"><div style="width:{% widthratio progress total 100 %}%"></div></div>
+      <p class="small">Participant code: <code>{{ participant_id }}</code>. This random code is included in your export.</p>
+      {% if error %}<p class="warning" role="alert">{{ error }}</p>{% endif %}
+      {% if complete %}
+        <h3>All eight ratings recorded</h3>
+        <p>Your condition assignments were hidden during listening. Export your CSV now; your ratings are not automatically saved as a research dataset.</p>
+        <p><a class="voice-action" href="{% url 'voicerank_study' %}?export=csv">Export completed study CSV</a></p>
+        <p class="small">Save one CSV per participant. A new listening session generates a new random code.</p>
+      {% else %}
+        <h3>Listen to the next clip</h3>
+        <p class="small">The wording and speaking-rate label are hidden. Replay the clip as needed.</p>
+        <audio controls preload="none" src="{% url 'voicerank_audio' current %}">Your browser does not support WAV playback.</audio>
+        <form method="post" action="{% url 'voicerank_study' %}">
+          {% csrf_token %}
+          <input type="hidden" name="command" value="rate">
+          <input type="hidden" name="clip_id" value="{{ current }}">
+          <fieldset>
+            <legend>1. How authoritative does the voice sound?</legend>
+            {% for score in '12345' %}<label class="radio"><input type="radio" name="authority" value="{{ score }}" required> {{ score }}</label>{% endfor %}
+            <p class="small">1 = not authoritative · 5 = very authoritative</p>
+          </fieldset>
+          <fieldset>
+            <legend>2. How clear is the speech?</legend>
+            {% for score in '12345' %}<label class="radio"><input type="radio" name="clarity" value="{{ score }}" required> {{ score }}</label>{% endfor %}
+            <p class="small">1 = unclear · 5 = very clear</p>
+          </fieldset>
+          <fieldset>
+            <legend>3. How urgent does the voice sound?</legend>
+            {% for score in '12345' %}<label class="radio"><input type="radio" name="urgency" value="{{ score }}" required> {{ score }}</label>{% endfor %}
+            <p class="small">1 = not urgent · 5 = very urgent</p>
+          </fieldset>
+          <button type="submit">Save rating and continue</button>
+        </form>
+      {% endif %}
+    </section>
+    <section class="voice-panel">
+      <h2>Session and privacy</h2>
+      <p>Four matched slower/faster pairs are spread across the eight trials. Which condition comes first changes between randomized schedules.</p>
+      <p>Responses are kept only in this local browser's Django session until exported. No real-world actions or model requests are made.</p>
+      <form method="post" action="{% url 'voicerank_study' %}">
+        {% csrf_token %}
+        <input type="hidden" name="command" value="reset">
+        <button type="submit" class="secondary">Discard session and start again</button>
+      </form>
+      <p class="small warning">Reset discards unexported ratings. Existing exported files must be deleted separately if desired.</p>
+    </section>
+  {% endif %}
+  </main>
+</body>
+</html>

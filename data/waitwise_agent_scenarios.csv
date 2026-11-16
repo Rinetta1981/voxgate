@@ -1,0 +1,25 @@
+case_id,transcript,initial_action,final_action,revises_prior_instruction,discourse_function
+AG01,"Send the memo to Pat... actually, send it to Robin.",send_memo_pat,send_memo_robin,1,recipient_revision
+AG02,"Please delete the draft; no, keep the draft.",delete_draft,keep_draft,1,instruction_cancellation
+AG03,"At noon, send the announcement. Sorry, make it 3 PM.",send_announcement_noon,send_announcement_3pm,1,time_revision
+AG04,"Book the morning flight, but change that to the evening flight.",book_morning_flight,book_evening_flight,1,flight_revision
+AG05,"Email Mira. Wait, email Niko instead.",email_mira,email_niko,1,recipient_revision
+AG06,"Share the document with everyone... on second thought, keep it private.",share_document_public,keep_document_private,1,instruction_cancellation
+AG07,"Email the attachment to Alex, or rather, send it to Morgan.",email_attachment_alex,send_attachment_morgan,1,recipient_revision
+AG08,Forward the invite to Kim. Correction: forward it to Jo.,forward_invite_kim,forward_invite_jo,1,recipient_revision
+AG09,"Could you send the file now? Actually, please wait until I confirm.",send_file_now,defer_file_pending_confirmation,1,instruction_delay
+AG10,Send the draft to Jen. Don't send it until tomorrow.,send_draft_now,send_draft_tomorrow,1,instruction_delay
+AG11,"Transfer the files to the shared drive. On second thought, keep them local.",transfer_shared,keep_local,1,destination_revision
+AG12,"Move the contract to Archive—wait, keep it in Review.",move_to_archive,keep_in_review,1,destination_revision
+AG13,"Send the memo to Pat. Actually, the presentation went well.",send_memo_pat,send_memo_pat,0,unrelated_comment
+AG14,"Book the room for Friday. Wait, what time does the venue close?",book_room_friday,book_room_friday,0,unrelated_question
+AG15,Please move the files to Archive. Sorry about yesterday.,move_files_archive,move_files_archive,0,unrelated_apology
+AG16,Delete the duplicate draft after checking it.,delete_duplicate_after_check,delete_duplicate_after_check,0,no_followup
+AG17,Email the team instead of calling them.,email_team,email_team,0,single_instruction_with_contrast
+AG18,"Send the paper to Maya. Actually, I'm looking for your email address.",send_paper_maya,send_paper_maya,0,unrelated_comment
+AG19,"Email the group. Wait, is the mailing list current?",email_group,email_group,0,unrelated_question
+AG20,Book the room for Tuesday. Sorry I missed your call.,book_room_tuesday,book_room_tuesday,0,unrelated_apology
+AG21,Send the invitation. No one received the last one.,send_invitation,send_invitation,0,unrelated_observation
+AG22,"Send the summary after lunch. Wait, did you email the client yesterday?",send_summary_after_lunch,send_summary_after_lunch,0,unrelated_question
+AG23,"Move this to Archive. Actually, the meeting is at 3.",move_to_archive,move_to_archive,0,unrelated_comment
+AG24,"Please share the agenda with the group. Instead of walking, take the elevator.",share_agenda_group,share_agenda_group,0,unrelated_advice

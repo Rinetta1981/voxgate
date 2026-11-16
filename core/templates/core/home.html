@@ -11,15 +11,19 @@
   <header>
     <h1>VOXGATE</h1>
     <h2>When Voices Cross AI Safety Boundaries</h2>
-    <p>Investigating how spoken social cues affect AI agent safety.</p>
-    <p><a href="{% url 'gate_lab' %}" style="color:#67e8f9;font-weight:bold">Explore the Authorization Gate Lab →</a></p>
-    <p><a href="{% url 'voicerank_lab' %}" style="color:#67e8f9;font-weight:bold">Open the VoiceRank Speech Perception Lab →</a></p>
+    <p>Local research prototype exploring spoken instruction revision and perceived vocal authority.</p>
+    <nav aria-label="Research modules">
+      <p><a href="{% url 'gate_lab' %}" style="color:#67e8f9;font-weight:bold">Authorization Gate Lab</a></p>
+      <p><a href="{% url 'voicerank_lab' %}" style="color:#67e8f9;font-weight:bold">VoiceRank Listening Pilot</a></p>
+      <p><a href="{% url 'voicerank_study' %}" style="color:#67e8f9;font-weight:bold">Expanded VoiceRank Study</a></p>
+      <p><a href="{% url 'results_dashboard' %}" style="color:#67e8f9;font-weight:bold">Research Results Dashboard</a></p>
+    </nav>
   </header>
   <main>
     <h2>Research Laboratory</h2>
     <section>
       <h3>WaitWise</h3>
-      <p>Can spoken self-corrections prevent premature AI agent actions?</p>
+      <p>How do spoken self-corrections affect proposed AI actions and review decisions?</p>
       <form method="post">
         {% csrf_token %}
         <label for="waitwise-text">Spoken instruction transcript</label>
@@ -30,9 +34,9 @@
     </section>
     <section>
       <h3>VoiceRank</h3>
-      <p>Do voice characteristics influence listeners' perceptions of authority, and eventually AI-agent permission decisions?</p>
-      <p>Our first experiment uses locally generated speech with constant text and synthetic voice, varying speaking rate.</p>
-      <p><a href="{% url 'voicerank_lab' %}" style="color:#67e8f9">Launch VoiceRank pilot →</a></p>
+      <p>Does speaking rate affect perceived authority, clarity, and urgency?</p>
+      <p>Local synthetic speech is used in the listening study. Direct audio-model authority evaluations remain future work.</p>
+      <p><a href="{% url 'voicerank_study' %}" style="color:#67e8f9">Open expanded listening study</a></p>
     </section>
   </main>
 </body>

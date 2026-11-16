@@ -1,15 +1,27 @@
 # VOXGATE — When Voices Cross AI Safety Boundaries
 
-A research-in-progress Django application exploring how spoken instructions, self-repairs, and social signals might affect AI agents' decisions. It contains two planned modules:
+VOXGATE is an **experimental, locally run AI safety research platform** for studying the relationship between speech, instruction revisions, perceived vocal authority, and simulated AI-agent action selection.
 
-- **WaitWise:** interruption, hesitation, and correction-aware authorization.
-- **VoiceRank:** effects of perceived vocal authority on agent permission decisions.
+It combines two research tracks:
 
-**Research status:** The present software is an early **text-only, rule-based prototype**. It does **not** yet generate speech, call language models, execute agent actions, or demonstrate improvements in AI safety. Do not interpret its classification scores as performance of an AI agent.
+- **WaitWise:** Detects possible changes to spoken instructions and examines when a proposed action should be withheld for review.
+- **VoiceRank:** Studies how controlled speech-rate variations affect human ratings of authority, clarity and urgency, and how speech recognition may affect downstream text-model decisions.
 
-## Local setup
+**Research status (November 2026):** Functional local research prototype, **not** a validated safety product or publicly deployable service. Its experiments include synthetic speech, on-device speech recognition, and optional local Qwen text-model inference. It does not directly test vocal authority in an audio-native AI model. The agent-action catalog is symbolic: no emails, bookings, transfers, deletions or other external actions are performed.
 
-Requires Python 3.13 and the packages in `requirements.txt`.
+## What works
+
+| Area | Available functionality | Main limitation |
+|---|---|---|
+| WaitWise | V1–V4 rule-based repair detectors, benchmarks, error analysis | Heuristic detection is not evidence of speaker authorization |
+| Agent evaluation | Mock policies, local Qwen symbolic action proposals, review-gate comparisons | Small model, constructed scenarios; no real tools |
+| Speech | Local synthesized WAV stimuli, acoustic audit, whisper.cpp transcription | Speech recognition loses acoustic information for downstream text-only Qwen |
+| VoiceRank | Listening pilot and counterbalanced expanded study with CSV export | Human perception pilot; direct audio-model permission tests not implemented |
+| Web application | Django home page, authorization lab, listening study, results dashboard | Local development only; not secured for public deployment |
+
+## Run locally (macOS)
+
+Python **3.13** is used in the existing development environment. From the repository root:
 
 ```bash
 python3.13 -m venv .venv
@@ -20,32 +32,90 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Visit http://127.0.0.1:8000/ . Never commit `.secret_key`. The current settings are for local development only (`DEBUG=True`); deployment will require separate production settings and environment-based secrets.
+The generated `.secret_key` is private and excluded by `.gitignore`. The Django configuration is a **development** configuration (`DEBUG=True`), not production-ready.
 
-## Reproducible WaitWise evaluation
+Open these local pages:
+
+- Home: http://127.0.0.1:8000/
+- WaitWise authorization review: http://127.0.0.1:8000/lab/
+- VoiceRank pilot: http://127.0.0.1:8000/voice/
+- VoiceRank expanded study: http://127.0.0.1:8000/voice/study/
+- Saved research results: http://127.0.0.1:8000/results/
+
+Some interfaces require locally generated stimulus files or prior saved experimental reports; they will indicate when those resources are absent. Do not expose the development server on a public network.
+
+## Free, optional local model and audio dependencies
+
+The existing experiments have used **Ollama** with the `qwen2.5:0.5b` text model and **whisper.cpp** with the `ggml-tiny.en.bin` model. Install these separately on your Mac; they are not included in the Git repository.
 
 ```bash
-python evaluate_waitwise.py --output-dir ~/Desktop/voxgate-reports
-python -m unittest core.tests -v
+ollama pull qwen2.5:0.5b
+brew install whisper.cpp
 ```
 
-The evaluation command prints TP, FP, FN, TN, precision, recall, F1, and accuracy for each of three unchanged detector versions across:
+`whisper-cli` must be on your `PATH` for speech-recognition benchmarks. Some audio generation commands also rely on macOS speech synthesis tools. See `docs/LOCAL_MODELS.md`, `docs/VOICERANK_SPEECH_ASR.md`, and the relevant experiment documentation for full requirements and setup.
 
-- `data/waitwise_cases.csv` — eight original development examples.
-- `data/waitwise_challenge.csv` — twelve additional examples whose errors were used to guide V3; **also development data**.
-- `data/waitwise_stress.csv` — twenty further researcher-constructed stress cases written after V3 was frozen, useful for identifying new failure modes, **not representative or independently annotated test data**.
+Running the documented local workflows does not require paid cloud APIs. `live_waitwise_agent.py` is an **optional** separate API-backed path; do not run it with `--live` if you want to avoid API charges.
 
-Reports are written to `~/Desktop/voxgate-reports/summary.json` and `~/Desktop/voxgate-reports/predictions.csv` when `--output-dir` is specified. Do not tune on stress examples and continue to call them held-out tests; subsequent improvements require another untouched set.
+## Tests and representative evaluation commands
 
-## Research validity limitations
+From the repository root with the virtual environment active:
 
-These experiments detect lexical and textual patterns, not acoustic disfluency, timing, social perception, consent, or unauthorized tool use. Annotation labels are provisional and were not independently checked. Reliable claims will require a coding protocol, independent annotators, larger varied datasets, speech synthesis and recordings, controlled agent simulations, multiple model evaluations, and a separately designed held-out test set.
+```bash
+python manage.py test core -v 1
+python evaluate_waitwise.py --output-dir ~/Desktop/voxgate-reports
+python audit_spoken_action_results.py
+```
 
-## Roadmap
+Other research workflows require locally generated data. Examples, after the prerequisites described in `docs/` are complete:
 
-1. Validate textual instruction-revision detection using independently annotated examples.
-2. Implement constrained mock-agent evaluations with no external side effects.
-3. Add controlled speech stimuli and matched transcription conditions.
-4. Build VoiceRank authority/perceived status experiments with controlled acoustic variables.
-5. Measure an authorization/repair-aware action gate against appropriate baselines.
-6. Investigate internal representations where technically feasible; release reproducible findings and research manuscripts.
+```bash
+python generate_voicerank_stimuli.py --check
+python audit_voicerank_audio.py
+python voicerank_speech_benchmark.py --run-asr
+python compare_spoken_repair_v4.py
+python spoken_action_benchmark.py --run-local --limit 24
+```
+
+Each command has its own input requirements. The 24-case spoken-action benchmark uses a constructed action catalog and on-device inference; it does **not** execute actual actions.
+
+## Selected exploratory findings
+
+The following are **descriptive, researcher-constructed pilot results**; neither labels nor samples have undergone independent validation.
+
+- On 24 constructed speech scenarios, recorded at two speaking rates, WaitWise V4 detected **23/24** positive revision recordings with **0** false positives among 24 negative recordings. These 48 observations represent **24 paired scenarios**, not 48 independent language examples. V4 had been tuned on earlier researcher-constructed material.
+- In a 24-scenario local Qwen experiment using **reference transcripts**, model-only symbolic action proposals were **10 correct / 14 wrong**; V4 review retained **8 correct / 4 wrong**, while holding **12**. Fewer exposed wrong proposals came with less action coverage.
+- Whisper-related changes altered Qwen's action choice in **3/48** paired transcript comparisons: two wrong-to-correct changes and one correct-to-wrong change.
+- The original VoiceRank listening pilots were completed by **one listener**; they do not establish population-level effects or causation beyond the narrow within-stimulus comparison.
+
+These figures are neither evidence of reliable authorization enforcement nor proof that an audio-capable model responds to vocal authority.
+
+## Scientific integrity and privacy
+
+- All simulated actions are non-operative. **A model's output is not permission to execute an action.**
+- The gate's hold/review decision is not equivalent to user confirmation or authorization.
+- Speech stimuli were synthesized for controlled local studies. Participation by independent listeners requires an appropriate ethics and consent framework.
+- Publicly committing a codebase does not automatically publish participants' CSV exports, WAV files, local model weights, API credentials, or keys. Keep those outside the repository and review all staged changes before every push.
+- The fresh constructed benchmarks are not a substitute for representative, independently annotated held-out evaluations.
+- There is no current mechanism-level or audio-native vocal-authority result; both are future work.
+
+## Research and implementation notes
+
+The `docs/` folder includes experiment setup, evaluation methodology and limitations. Key starting points:
+
+- `docs/LOCAL_MODELS.md`
+- `docs/VOICERANK_EXPANDED.md`
+- `docs/SPOKEN_REPAIR_FRESH.md`
+- `docs/SPOKEN_ACTION_AUDIT.md`
+- `docs/RESULTS_DASHBOARD.md`
+
+## Next milestones
+
+1. Confirm reproducible local installation and Django route coverage from a fresh checkout.
+2. Record model, stimuli and dataset provenance; review pilot findings for a technical research report.
+3. Obtain appropriately consented independent annotations and listener judgments.
+4. Compare stronger local text models, then study audio-native decision-making with suitable controls.
+5. Add formal controls for confirmation/authorization, evaluate accuracy-versus-coverage, and document a threat model.
+6. Prepare a research preprint describing methods, results, limitations and reproducible artifacts.
+
+**License:** No license is asserted here. Add an explicit project license only after deciding how the code and research assets should be reused.

@@ -5,13 +5,14 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from .test_voicerank import create_fixture
 from .voicerank_views import ORDER_KEY, RATINGS_KEY
 
 
+@override_settings(DEBUG=True)
 class VoiceRankDjangoTests(TestCase):
     def setUp(self):
         self.temp = TemporaryDirectory()
